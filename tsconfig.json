@@ -4,7 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "lib": [
-      "esnext"
+      "esnext", "DOM"
     ],
     "target": "es2015",
     "outDir": "./lib",
