@@ -7,7 +7,7 @@
       "esnext", "DOM"
     ],
     "target": "es2015",
-    "outDir": "./lib",
+    "outDir": "build",
     "removeComments": true,
     "inlineSourceMap": true,
     "inlineSources": true,
