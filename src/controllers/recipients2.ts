@@ -1,8 +1,5 @@
 import * as express from "express";
-import * as mysql from "mysql";
-import dbConfig from "../db";
-
-export const recipientsController: express.Router = express.Router();
+const db = require('../database');
 
 // INTERFACEES
 
@@ -48,21 +45,16 @@ const getRecipientIds = (results: RowParsed[]): string[] => {
 
 // ENDPOINT
 
-recipientsController.get('/recipients', (_, res: express.Response): void => {
+export const recipientsController: express.Router = express.Router();
 
+recipientsController.get('/recipients', (_, res: express.Response): void => {
+  
   res.header("Access-Control-Allow-Origin", "*");
 
-  const connection = mysql.createConnection(dbConfig);
-
-  connection.connect((err: any) => {
-      if (err) throw err;
-      connection.query('SELECT payload FROM events', (err: any, rows: Row[]) => {
-          if (err) throw err;
-          let results: RowParsed[] = payloadStringToJsObject(rows);
-          let recipients: string[] = getRecipientIds(results);
-          return res.status(200).json(recipients);
-        });
-
-      connection.end();
-  });
+  db.query('SELECT payload FROM events', (err: boolean, rows: Row[]) => {
+    if (err) throw err;
+    let results: RowParsed[] = payloadStringToJsObject(rows);
+    let recipients: string[] = getRecipientIds(results);
+    return res.status(200).json(recipients);
+  })
 });
