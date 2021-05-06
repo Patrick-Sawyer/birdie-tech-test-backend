@@ -1,5 +1,5 @@
 import * as express from "express";
-const db = require('../database');
+import databaseQuery from '../database';
 
 // INTERFACEES
 
@@ -51,8 +51,8 @@ recipientsController.get('/recipients', (_, res: express.Response): void => {
   
   res.header("Access-Control-Allow-Origin", "*");
 
-  db.query('SELECT payload FROM events', (err: boolean, rows: Row[]) => {
-    if (err) throw err;
+  databaseQuery('SELECT payload FROM events', (err: boolean, rows: Row[]) => {
+    if (err) return res.status(500).json({error: 'error'});
     let results: RowParsed[] = payloadStringToJsObject(rows);
     let recipients: string[] = getRecipientIds(results);
     return res.status(200).json(recipients);

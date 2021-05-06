@@ -1,19 +1,29 @@
-import mysql = require('mysql');
+var mysql = require('mysql');
 
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    port: 3306
-});
+var pool: any;
 
-db.connect((err: any) => {
-    if (!err) {
-    console.log('Database is connected!');
-    } else {
-    console.log('Error connecting database!');
+const databaseQuery = async (queryString: string, callback: any): Promise<void> => {
+
+    if (!pool) {
+        pool  = await mysql.createPool({
+            connectionLimit : 10,
+            host: process.env.DB_HOST,
+            database: process.env.DB_NAME,
+            user: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            port: 3306
+        });
     }
-});
 
-module.exports = db;
+    console.log(pool);
+
+    pool.query(queryString, (error: any, results: any) => {
+        if (error) {
+           callback(true, []);
+        } else {
+            callback(false, results);
+        }
+    });
+}
+
+export default databaseQuery;

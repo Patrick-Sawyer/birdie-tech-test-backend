@@ -1,5 +1,5 @@
 import * as express from "express";
-const db = require('../database');
+import databaseQuery from '../database';
 
 // INTERFACEES
 
@@ -105,8 +105,8 @@ observationsController.get('/observations', (req: express.Request<{},{},{}, Quer
   let recipientQuery: string = recipient ? ' WHERE care_recipient_id="' + recipient + '"' : '';
   let queryString: string = 'SELECT payload, timestamp FROM events' + recipientQuery + ' ORDER BY timestamp DESC';
 
-  db.query(queryString, (err: boolean, rows: Row[]) => {
-    if (err) throw err;
+  databaseQuery(queryString, (err: boolean, rows: Row[]) => {
+    if (err) return res.status(500).json({error: 'error'});
 
     let results: RowParsed[] = payloadStringToJsObject(rows);
 
